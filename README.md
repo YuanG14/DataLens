@@ -1,8 +1,6 @@
 # MindState — Mental Health Analytics Dashboard
 
-React + TypeScript + Vite + Tailwind CSS v4 rebuild of the original single-file
-prototype. Visual design is unchanged; the app is now componentized, typed,
-and built with a real toolchain instead of CDN scripts.
+React + TypeScript + Vite + Tailwind CSS v4 dashboard, feature-based structure.
 
 ## Getting started
 
@@ -10,6 +8,7 @@ and built with a real toolchain instead of CDN scripts.
 npm install
 npm run dev      # http://localhost:5173
 npm run build    # type-checks (tsc -b) then produces dist/
+npm run lint     # oxlint
 npm run preview  # serve the production build locally
 ```
 
@@ -17,28 +16,38 @@ npm run preview  # serve the production build locally
 
 ```
 src/
-  types/dashboard.ts        Domain types (StudentRecord, FilterState, etc.)
-  lib/
-    mockData.ts              Synthetic dataset generator
-    stats.ts                 Aggregation helpers (KPIs, correlation, brackets, demographics)
-    csv.ts                   CSV import (header-based) and export
-    risk.ts                  Heuristic risk estimator (placeholder, not ML)
-  hooks/
-    useDashboardData.ts      Central state: raw data, filters, filtered data
-    useChartInstance.ts      Chart.js lifecycle (create on mount, destroy on unmount)
-  components/dashboard/
-    Header.tsx, FilterBar.tsx, KpiGrid.tsx, InsightPanel.tsx,
-    RecordTable.tsx, RiskPanel.tsx
-    charts/                  One component per Chart.js chart
+  app/
+    App.tsx              Composition root — wires the dashboard feature together
+    ErrorBoundary.tsx     Top-level crash fallback (wraps App in main.tsx)
+  features/
+    dashboard/
+      components/         Header, FilterBar, KpiGrid, InsightPanel, RecordTable,
+                           RiskPanel, charts/ (one file per Chart.js chart)
+      hooks/               useDashboardData — raw data, filters, filtered data
+      lib/                 constants, mockData, stats, csv, risk
+      types/               StudentRecord, FilterState, DashboardStats, etc.
+  shared/
+    hooks/
+      useChartInstance.ts  Chart.js lifecycle, usable by any future chart-based feature
+  main.tsx, index.css
 ```
 
-## Known placeholders (see audit)
+Import path `@/...` maps to `src/...` (configured in both `tsconfig.app.json`
+and `vite.config.ts`) — avoids `../../../` chains as the tree grows.
+
+Each folder under `features/dashboard/` has an `index.ts` barrel, so
+consumers import `@/features/dashboard/components` rather than reaching into
+individual files. When a second feature (e.g. `features/auth/`) is added in a
+later phase, it follows the same shape: `components/`, `hooks/`, `lib/`,
+`types/`, each with its own barrel.
+
+## Known placeholders (see Phase 1 audit)
 
 - **InsightPanel** renders a rule-based template string, not an LLM-generated
-  insight. Wire this up once an AI-insights backend exists.
+  insight — wire up once an AI-insights backend exists.
 - **RiskPanel** uses a fixed linear heuristic (`lib/risk.ts`), not a trained
   model.
-- **Export PDF** button calls `window.print()` — a real PDF export (e.g.
-  server-rendered or a PDF library) is a later phase.
+- **Export PDF** button calls `window.print()` — a real PDF export is a later
+  phase.
 - No backend yet: data is either the generated mock set or a locally
   imported CSV. Supabase/auth/persistence are subsequent phases.
