@@ -4,6 +4,7 @@ export * from './KpiGrid';
 export * from './InsightPanel';
 export * from './RecordTable';
 export * from './RiskPanel';
+export * from './EmptyState';
 export * from './charts/CorrelationChart';
 export * from './charts/PlatformRadarChart';
 export * from './charts/UsageImpactChart';
