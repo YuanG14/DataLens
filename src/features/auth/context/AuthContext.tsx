@@ -63,6 +63,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
   };
 
+  const sendPasswordResetEmail = async (email: string): Promise<AuthResult> => {
+    if (!isSupabaseConfigured) {
+      return { success: false, error: 'Authentication is not configured yet.' };
+    }
+    // redirectTo tells Supabase which page to send the user back to after
+    // they click the link in the email — that page is ResetPasswordPage.
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) return { success: false, error: toFriendlyAuthError(error) };
+    return { success: true };
+  };
+
+  const updatePassword = async (newPassword: string): Promise<AuthResult> => {
+    if (!isSupabaseConfigured) {
+      return { success: false, error: 'Authentication is not configured yet.' };
+    }
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) return { success: false, error: toFriendlyAuthError(error) };
+    return { success: true };
+  };
+
   const value: AuthContextValue = {
     session,
     user: session?.user ?? null,
@@ -70,6 +92,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signUp,
     signIn,
     signOut,
+    sendPasswordResetEmail,
+    updatePassword,
   };
 
   return <AuthContext value={value}>{children}</AuthContext>;

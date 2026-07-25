@@ -1,13 +1,16 @@
 import { useRef } from 'react';
-import { BrainCircuit, FileDown, Upload } from 'lucide-react';
+import { BrainCircuit, FileDown, LogOut, Upload } from 'lucide-react';
 import { parseStudentCsv } from '@/features/dashboard/lib/csv';
 import type { StudentRecord } from '@/features/dashboard/types';
 
 interface HeaderProps {
   onImport: (records: StudentRecord[]) => void;
+  /** Signed-in user's email, shown next to the sign-out button. */
+  userEmail?: string | null;
+  onSignOut?: () => void;
 }
 
-export function Header({ onImport }: HeaderProps) {
+export function Header({ onImport, userEmail, onSignOut }: HeaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +62,17 @@ export function Header({ onImport }: HeaderProps) {
           >
             <FileDown className="w-4 h-4" aria-hidden="true" /> Export PDF
           </button>
+          {onSignOut && (
+            <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
+              {userEmail && <span className="text-sm text-slate-500 hidden sm:inline">{userEmail}</span>}
+              <button
+                onClick={onSignOut}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-all"
+              >
+                <LogOut className="w-4 h-4" aria-hidden="true" /> Sign out
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>
