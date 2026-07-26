@@ -24,6 +24,7 @@ export function useCsvImport() {
   const [datasetName, setDatasetName] = useState('');
   const [importing, setImporting] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
+  const [createdDatasetId, setCreatedDatasetId] = useState<number | null>(null);
 
   const selectFile = useCallback(async (file: File) => {
     setFileError(null);
@@ -64,6 +65,7 @@ export function useCsvImport() {
     setOverrides({});
     setValidation(null);
     setImportError(null);
+    setCreatedDatasetId(null);
     setStep('upload');
   }, []);
 
@@ -106,6 +108,7 @@ export function useCsvImport() {
       );
 
       await insertDatasetRows(dataset.id, normalized.rows);
+      setCreatedDatasetId(dataset.id);
       setStep('done');
     } catch (err) {
       setImportError(err instanceof Error ? err.message : 'Something went wrong while importing this dataset.');
@@ -132,6 +135,7 @@ export function useCsvImport() {
       datasetName,
       importing,
       importError,
+      createdDatasetId,
       canGoToMap,
       selectFile,
       clearFile,
@@ -157,6 +161,7 @@ export function useCsvImport() {
       datasetName,
       importing,
       importError,
+      createdDatasetId,
       canGoToMap,
       selectFile,
       clearFile,

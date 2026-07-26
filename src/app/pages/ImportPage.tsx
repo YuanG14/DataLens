@@ -21,7 +21,7 @@ export function ImportPage() {
       </header>
 
       <main className="max-w-[1600px] mx-auto px-6 py-8">
-        <ImportWizard onImported={() => navigate('/')} />
+        <ImportWizard onImported={(datasetId) => navigate(`/datasets/${datasetId}`)} />
       </main>
     </div>
   );

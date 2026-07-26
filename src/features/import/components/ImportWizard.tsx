@@ -7,8 +7,8 @@ import { ColumnMappingTable } from '@/features/import/components/ColumnMappingTa
 import { ValidationSummary } from '@/features/import/components/ValidationSummary';
 
 interface ImportWizardProps {
-  /** Called after a dataset has been successfully imported (e.g. to navigate away). */
-  onImported?: () => void;
+  /** Called after a dataset has been successfully imported, with its new id (e.g. to navigate to its analytics view). */
+  onImported?: (datasetId: number) => void;
 }
 
 export function ImportWizard({ onImported }: ImportWizardProps) {
@@ -26,6 +26,7 @@ export function ImportWizard({ onImported }: ImportWizardProps) {
     datasetName,
     importing,
     importError,
+    createdDatasetId,
     canGoToMap,
     selectFile,
     clearFile,
@@ -134,8 +135,8 @@ export function ImportWizard({ onImported }: ImportWizardProps) {
           <CheckCircle2 className="w-10 h-10 text-emerald-500" aria-hidden="true" />
           <h3 className="text-lg font-semibold text-slate-900">Dataset imported</h3>
           <p className="text-sm text-slate-500 max-w-sm">
-            "{datasetName}" was imported successfully. The analytics engine that turns this into charts and
-            insights is coming in a later phase.
+            "{datasetName}" was imported successfully. Its dashboard — KPIs, charts, and correlations generated
+            automatically from its columns — is ready to view.
           </p>
           <div className="flex gap-3 mt-2">
             <button
@@ -144,12 +145,12 @@ export function ImportWizard({ onImported }: ImportWizardProps) {
             >
               Import another file
             </button>
-            {onImported && (
+            {onImported && createdDatasetId !== null && (
               <button
-                onClick={onImported}
+                onClick={() => onImported(createdDatasetId)}
                 className="bg-brand text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90"
               >
-                Done
+                View Analytics
               </button>
             )}
           </div>
