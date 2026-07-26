@@ -9,6 +9,7 @@ import {
   RecommendedCharts,
   useDatasetAnalytics,
 } from '@/features/analytics';
+import { InsightPanel } from '@/features/insights';
 
 export function DatasetDetailPage() {
   const navigate = useNavigate();
@@ -50,6 +51,7 @@ export function DatasetDetailPage() {
             <DynamicKpiGrid kpis={analytics.kpis} />
             <DataQualityPanel dataQuality={analytics.dataQuality} />
             <CorrelationTable correlations={analytics.correlations} />
+            <InsightPanel dataset={analyzable} analytics={analytics} />
             <RecommendedCharts
               dataset={analyzable}
               recommendations={analytics.recommendations}
