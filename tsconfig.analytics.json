@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "outDir": "/home/claude/mindstate/testbuild",
+    "baseUrl": "src",
+    "rootDir": "src/features",
+    "paths": { "@/*": ["*"] },
+    "ignoreDeprecations": "6.0"
+  },
+  "include": [
+    "src/features/analytics/types/index.ts",
+    "src/features/analytics/lib/**/*.ts",
+    "src/features/import/types/index.ts",
+    "src/features/import/lib/roleDetect.ts",
+    "src/features/datasets/types/index.ts"
+  ]
+}

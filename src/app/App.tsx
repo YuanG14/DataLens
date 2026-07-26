@@ -8,6 +8,8 @@ import {
   ResetPasswordPage,
   DashboardPage,
   ImportPage,
+  DatasetsPage,
+  DatasetDetailPage,
 } from '@/app/pages';
 
 function App() {
@@ -30,6 +32,8 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/import" element={<ImportPage />} />
+          <Route path="/datasets" element={<DatasetsPage />} />
+          <Route path="/datasets/:datasetId" element={<DatasetDetailPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

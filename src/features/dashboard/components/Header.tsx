@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BrainCircuit, Database, FileDown, LogOut, Upload, X } from 'lucide-react';
+import { BrainCircuit, Database, FileDown, LayoutGrid, LogOut, Upload, X } from 'lucide-react';
 import { parseStudentCsv } from '@/features/dashboard/lib/csv';
 import type { StudentRecord } from '@/features/dashboard/types';
 
@@ -79,6 +79,12 @@ export function Header({ onImport, userEmail, onSignOut }: HeaderProps) {
           </h1>
         </div>
         <div className="flex items-center gap-4">
+          <Link
+            to="/datasets"
+            className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium hover:bg-slate-50 transition-all"
+          >
+            <LayoutGrid className="w-4 h-4" aria-hidden="true" /> My Datasets
+          </Link>
           <Link
             to="/import"
             className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium hover:bg-slate-50 transition-all"
