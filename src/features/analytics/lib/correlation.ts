@@ -1,5 +1,6 @@
 import type { AnalyzableDataset, CorrelationPair, CorrelationStrength } from '@/features/analytics/types';
 import { analyzableNumericColumns } from '@/features/analytics/lib/columnValues';
+import { correlationPValue, isSignificant } from '@/features/analytics/lib/significance';
 
 /** Below this many paired observations, a correlation isn't reliable enough to show. */
 const MIN_OBSERVATIONS_FOR_CORRELATION = 3;
@@ -69,6 +70,7 @@ export function computeCorrelation(
   if (pairs.length < MIN_OBSERVATIONS_FOR_CORRELATION) return null;
 
   const r = pearsonCorrelation(pairs);
+  const pValue = correlationPValue(r, pairs.length);
   return {
     columnA,
     columnB,
@@ -76,6 +78,8 @@ export function computeCorrelation(
     strength: labelCorrelationStrength(r),
     direction: r === 0 ? 'none' : r > 0 ? 'positive' : 'negative',
     sampleSize: pairs.length,
+    pValue: Math.round(pValue * 10000) / 10000,
+    significant: isSignificant(pValue),
   };
 }
 

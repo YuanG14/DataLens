@@ -84,11 +84,19 @@ export function dateColumns(dataset: AnalyzableDataset): AnalyzableColumn[] {
   return dataset.columns.filter((c) => c.columnType === 'date');
 }
 
-/** Numeric columns that make sense as KPIs/histograms/correlation inputs — excludes identifier-like columns. */
+/**
+ * Numeric columns that make sense as KPIs/histograms/correlation inputs —
+ * excludes identifier-like columns. Deliberately does NOT use the
+ * cardinality-ratio heuristic here (unlike the categorical version below):
+ * a continuous measure like price or revenue is *expected* to be almost
+ * entirely unique in any reasonably sized dataset, so that ratio can't
+ * distinguish "this is an ID" from "this is just a real-valued
+ * measurement" — only the name-based semantic-role detector can. Relying
+ * on cardinality here silently dropped exactly the kind of column
+ * correlation/trend/anomaly analysis most needs to see.
+ */
 export function analyzableNumericColumns(dataset: AnalyzableDataset): AnalyzableColumn[] {
-  return numericColumns(dataset).filter(
-    (col) => col.semanticRole !== 'identifier' && !isHighCardinality(dataset, col),
-  );
+  return numericColumns(dataset).filter((col) => col.semanticRole !== 'identifier');
 }
 
 /** Categorical columns worth charting — excludes identifier-like and near-unique free text. */

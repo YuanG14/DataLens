@@ -2,14 +2,18 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useDatasetDetail } from '@/features/datasets';
 import {
+  AnomalyPanel,
   CorrelationTable,
   DataQualityPanel,
   DatasetSummaryCards,
   DynamicKpiGrid,
   RecommendedCharts,
+  StatisticalSummaryTable,
+  TrendAnalysisPanel,
   useDatasetAnalytics,
 } from '@/features/analytics';
 import { InsightPanel } from '@/features/insights';
+import { FilterBar, useDatasetFilters } from '@/features/filters';
 
 export function DatasetDetailPage() {
   const navigate = useNavigate();
@@ -17,7 +21,20 @@ export function DatasetDetailPage() {
   const parsedId = datasetId ? Number(datasetId) : NaN;
 
   const { dataset, analyzable, loading, error } = useDatasetDetail(Number.isNaN(parsedId) ? null : parsedId);
-  const analytics = useDatasetAnalytics(analyzable);
+
+  // Column stats for building filter controls (ranges/category lists) come
+  // from the *unfiltered* dataset, so a slider's bounds don't shrink as the
+  // user narrows the data — see buildFilterOptions for why.
+  const baseAnalytics = useDatasetAnalytics(analyzable);
+  const { filters, options, filteredDataset, activeCount, addFilter, updateFilter, removeFilter, clearFilters } = useDatasetFilters(
+    analyzable,
+    baseAnalytics?.columnStatistics ?? null,
+  );
+
+  // Every other panel — KPIs, correlations, trends, anomalies, insights,
+  // charts — analyzes the filtered dataset, so narrowing the data here
+  // changes the whole page consistently.
+  const analytics = useDatasetAnalytics(filteredDataset);
 
   return (
     <div className="text-slate-800">
@@ -43,17 +60,33 @@ export function DatasetDetailPage() {
 
         {loading ? (
           <div className="py-24 text-center text-sm text-slate-500">Analyzing your dataset…</div>
-        ) : !analyzable || !analytics ? (
+        ) : !analyzable || !filteredDataset || !analytics ? (
           !error && <div className="py-24 text-center text-sm text-slate-500">Dataset not found.</div>
         ) : (
           <>
+            {options.length > 0 && (
+              <FilterBar
+                options={options}
+                filters={filters}
+                activeCount={activeCount}
+                totalRowCount={analyzable.rowCount}
+                filteredRowCount={filteredDataset.rowCount}
+                onAdd={addFilter}
+                onUpdate={updateFilter}
+                onRemove={removeFilter}
+                onClear={clearFilters}
+              />
+            )}
             <DatasetSummaryCards summary={analytics.summary} />
             <DynamicKpiGrid kpis={analytics.kpis} />
             <DataQualityPanel dataQuality={analytics.dataQuality} />
+            <StatisticalSummaryTable columnStatistics={analytics.columnStatistics} />
             <CorrelationTable correlations={analytics.correlations} />
-            <InsightPanel dataset={analyzable} analytics={analytics} />
+            <TrendAnalysisPanel trends={analytics.trendAnalyses} />
+            <AnomalyPanel anomalies={analytics.anomalies} />
+            <InsightPanel dataset={filteredDataset} analytics={analytics} />
             <RecommendedCharts
-              dataset={analyzable}
+              dataset={filteredDataset}
               recommendations={analytics.recommendations}
               columnStatistics={analytics.columnStatistics}
             />

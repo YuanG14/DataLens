@@ -4,3 +4,6 @@ export * from './DataQualityPanel';
 export * from './CorrelationTable';
 export * from './RecommendedCharts';
 export * from './EmptyChartState';
+export * from './StatisticalSummaryTable';
+export * from './TrendAnalysisPanel';
+export * from './AnomalyPanel';

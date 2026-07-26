@@ -46,7 +46,8 @@ export function CorrelationTable({ correlations }: CorrelationTableProps) {
               <th className="pb-2 pr-4">Columns</th>
               <th className="pb-2 pr-4">r</th>
               <th className="pb-2 pr-4">Strength</th>
-              <th className="pb-2">Direction</th>
+              <th className="pb-2 pr-4">Direction</th>
+              <th className="pb-2">Significance</th>
             </tr>
           </thead>
           <tbody>
@@ -57,7 +58,17 @@ export function CorrelationTable({ correlations }: CorrelationTableProps) {
                 </td>
                 <td className="py-2 pr-4 font-mono text-slate-600">{pair.r}</td>
                 <td className={`py-2 pr-4 font-medium capitalize ${STRENGTH_COLOR[pair.strength]}`}>{pair.strength}</td>
-                <td className="py-2 text-slate-500 capitalize">{pair.direction}</td>
+                <td className="py-2 pr-4 text-slate-500 capitalize">{pair.direction}</td>
+                <td className="py-2">
+                  <span
+                    title={`p = ${pair.pValue}`}
+                    className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                      pair.significant ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-400'
+                    }`}
+                  >
+                    {pair.significant ? `p = ${pair.pValue}` : 'not significant'}
+                  </span>
+                </td>
               </tr>
             ))}
           </tbody>

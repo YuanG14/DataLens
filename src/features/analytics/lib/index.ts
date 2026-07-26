@@ -9,3 +9,6 @@ export * from './histogram';
 export * from './timeSeries';
 export * from './adapters';
 export * from './analyze';
+export * from './significance';
+export * from './trendAnalysis';
+export * from './anomalyDetection';

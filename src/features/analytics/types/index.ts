@@ -38,6 +38,14 @@ export interface NumericStats {
   range: number;
   stdDev: number;
   uniqueCount: number;
+  /** 25th percentile. */
+  q1: number;
+  /** 75th percentile. */
+  q3: number;
+  /** q3 - q1; the spread the IQR-based anomaly detector is built on. */
+  iqr: number;
+  /** Third standardized moment. ~0 is symmetric, >0 right-skewed (long tail high), <0 left-skewed. */
+  skewness: number;
 }
 
 export interface CategoricalStats {
@@ -97,12 +105,54 @@ export interface CorrelationPair {
   direction: 'positive' | 'negative' | 'none';
   /** Number of paired observations the correlation was computed from. */
   sampleSize: number;
+  /** Two-tailed p-value from a t-test on r, under the null hypothesis that the true correlation is 0. */
+  pValue: number;
+  /** pValue < 0.05. A correlation can be non-negligible in size and still not be statistically significant with a small sample. */
+  significant: boolean;
 }
 
 export interface GroupComparison {
   categoricalColumn: string;
   numericColumn: string;
   groups: { category: string; average: number; count: number }[];
+}
+
+// ---------------------------------------------------------------------------
+// Trend analysis (Phase 9)
+// ---------------------------------------------------------------------------
+
+export interface TrendAnalysis {
+  dateColumn: string;
+  numericColumn: string;
+  /** Change in the numeric value per day, from an ordinary-least-squares fit against elapsed days. */
+  slopePerDay: number;
+  /** R² of the linear fit — how well a straight line explains the movement (0-1). */
+  rSquared: number;
+  direction: 'increasing' | 'decreasing' | 'flat';
+  /** Two-tailed p-value testing whether the slope is different from 0. */
+  pValue: number;
+  significant: boolean;
+  pointCount: number;
+}
+
+// ---------------------------------------------------------------------------
+// Anomaly detection (Phase 9)
+// ---------------------------------------------------------------------------
+
+export interface AnomalyPoint {
+  rowIndex: number;
+  value: number;
+  severity: 'mild' | 'extreme';
+}
+
+export interface ColumnAnomalies {
+  column: string;
+  lowerBound: number;
+  upperBound: number;
+  /** Most extreme first, capped at 10. */
+  outliers: AnomalyPoint[];
+  outlierCount: number;
+  outlierPercentage: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -172,4 +222,6 @@ export interface AnalyticsResult {
   correlations: CorrelationPair[];
   recommendations: ChartRecommendation[];
   dataQuality: DataQuality;
+  trendAnalyses: TrendAnalysis[];
+  anomalies: ColumnAnomalies[];
 }

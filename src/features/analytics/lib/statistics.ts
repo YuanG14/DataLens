@@ -32,11 +32,35 @@ function stdDev(values: number[], avg: number): number {
   return Math.sqrt(variance);
 }
 
+/** Linear-interpolation percentile (the same convention Excel/numpy's default use) over already-sorted values. */
+function percentile(sorted: number[], p: number): number {
+  if (sorted.length === 0) return 0;
+  if (sorted.length === 1) return sorted[0];
+  const index = p * (sorted.length - 1);
+  const lower = Math.floor(index);
+  const upper = Math.ceil(index);
+  if (lower === upper) return sorted[lower];
+  const weight = index - lower;
+  return sorted[lower] * (1 - weight) + sorted[upper] * weight;
+}
+
+/** Pearson's moment coefficient of skewness (third standardized moment). 0 for values with no spread. */
+function skewness(values: number[], avg: number, sd: number): number {
+  if (values.length < 3 || sd === 0) return 0;
+  const n = values.length;
+  const thirdMoment = values.reduce((sum, v) => sum + ((v - avg) / sd) ** 3, 0) / n;
+  return thirdMoment;
+}
+
 export function computeNumericStats(dataset: AnalyzableDataset, column: string): NumericStats {
   const values = getNumericValues(dataset, column);
   const avg = mean(values);
   const min = values.length > 0 ? Math.min(...values) : 0;
   const max = values.length > 0 ? Math.max(...values) : 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  const q1 = percentile(sorted, 0.25);
+  const q3 = percentile(sorted, 0.75);
+  const sd = stdDev(values, avg);
 
   return {
     kind: 'numeric',
@@ -47,8 +71,12 @@ export function computeNumericStats(dataset: AnalyzableDataset, column: string):
     min,
     max,
     range: max - min,
-    stdDev: stdDev(values, avg),
+    stdDev: sd,
     uniqueCount: new Set(values).size,
+    q1,
+    q3,
+    iqr: q3 - q1,
+    skewness: skewness(values, avg, sd),
   };
 }
 
