@@ -1,4 +1,4 @@
-# MindState — Mental Health Analytics Dashboard
+# DataLens — Mental Health Analytics Dashboard
 
 React + TypeScript + Vite + Tailwind CSS v4 dashboard, feature-based structure.
 

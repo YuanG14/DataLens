@@ -17,7 +17,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   componentDidCatch(error: Error, info: ErrorInfo) {
     // Centralized log point — swap for a real error-reporting service later.
-    console.error('MindState dashboard crashed:', error, info.componentStack);
+    console.error('DataLens dashboard crashed:', error, info.componentStack);
   }
 
   private handleReset = () => this.setState({ error: null });

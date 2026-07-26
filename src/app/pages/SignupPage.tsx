@@ -9,7 +9,7 @@ export function SignupPage() {
   return (
     <AuthCard
       title="Create your account"
-      subtitle={submitted ? undefined : 'Get started with MindState in a few seconds.'}
+      subtitle={submitted ? undefined : 'Get started with DataLens in a few seconds.'}
       footer={
         <>
           Already have an account?{' '}

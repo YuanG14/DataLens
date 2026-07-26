@@ -19,7 +19,7 @@ export function AuthCard({ title, subtitle, children, footer }: AuthCardProps) {
       <div className="w-full max-w-sm">
         <div className="flex items-center justify-center gap-2 text-brand mb-6">
           <BrainCircuit className="w-8 h-8" aria-hidden="true" />
-          <span className="text-xl font-bold tracking-tight text-slate-900">MindState</span>
+          <span className="text-xl font-bold tracking-tight text-slate-900">DataLens</span>
         </div>
 
         <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-8">

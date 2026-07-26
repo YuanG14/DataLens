@@ -75,7 +75,7 @@ export function Header({ onImport, userEmail, onSignOut }: HeaderProps) {
         <div className="flex items-center gap-2 text-brand">
           <BrainCircuit className="w-8 h-8" aria-hidden="true" />
           <h1 className="text-xl font-bold tracking-tight text-slate-900">
-            MindState <span className="text-brand font-medium text-sm ml-2">v1.0</span>
+            DataLens <span className="text-brand font-medium text-sm ml-2">v1.0</span>
           </h1>
         </div>
         <div className="flex items-center gap-4">

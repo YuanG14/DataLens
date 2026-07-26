@@ -78,7 +78,7 @@ export function parseStudentCsv(text: string): StudentRecord[] {
   return records;
 }
 
-export function exportRecordsAsCsv(data: StudentRecord[], filename = 'MindState_Filtered_Data.csv') {
+export function exportRecordsAsCsv(data: StudentRecord[], filename = 'DataLens_Filtered_Data.csv') {
   if (data.length === 0) return;
 
   const headers = Object.keys(data[0]);
