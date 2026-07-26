@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { DatasetWithData } from '@/features/datasets/types';
 import { fetchDatasetWithData } from '@/features/datasets/lib';
 import { fromDatasetWithData } from '@/features/analytics/lib';
-import { toFriendlyDataError } from '@/features/dashboard/lib/errors';
+import { toFriendlyDataError } from '@/lib/errors';
 
 export function useDatasetDetail(datasetId: number | null) {
   const [dataset, setDataset] = useState<DatasetWithData | null>(null);

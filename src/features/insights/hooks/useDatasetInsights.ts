@@ -10,6 +10,8 @@ interface UseDatasetInsightsResult {
   insights: Insight[];
   isSensitiveDomain: boolean;
   canRegenerate: boolean;
+  /** Size of the ranked insight pool (excludes the always-shown summary card). 0 means no relationships, trends, group differences, or quality warnings were found. */
+  poolSize: number;
   error: string | null;
   generate: () => void;
   regenerate: () => void;
@@ -56,7 +58,7 @@ export function useDatasetInsights(dataset: AnalyzableDataset | null, analytics:
         } catch {
           // The analytics dashboard must keep working even if insight generation fails.
           setStatus('error');
-          setError('Unable to generate AI insights. Your statistical analytics are still available.');
+          setError('Unable to generate insights. Your statistical analytics are still available.');
         }
       }, GENERATION_DELAY_MS);
     },
@@ -78,6 +80,7 @@ export function useDatasetInsights(dataset: AnalyzableDataset | null, analytics:
     insights,
     isSensitiveDomain,
     canRegenerate: poolSize > 3,
+    poolSize,
     error,
     generate,
     regenerate,

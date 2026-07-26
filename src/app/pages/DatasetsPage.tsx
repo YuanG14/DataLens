@@ -1,10 +1,11 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Database, Trash2, Upload } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Database, LogOut, Trash2, Upload } from 'lucide-react';
 import { useDatasets } from '@/features/datasets';
+import { useAuth } from '@/features/auth';
 
 export function DatasetsPage() {
-  const navigate = useNavigate();
   const { datasets, loading, error, remove } = useDatasets();
+  const { user, signOut } = useAuth();
 
   const handleDelete = async (id: number, name: string) => {
     if (!window.confirm(`Delete "${name}"? This can't be undone.`)) return;
@@ -15,22 +16,27 @@ export function DatasetsPage() {
     <div className="text-slate-800">
       <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-[1600px] mx-auto px-6 h-16 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/')}
-              className="flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900"
-            >
-              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-              Back to dashboard
-            </button>
-            <h1 className="text-lg font-semibold text-slate-900">My Datasets</h1>
+          <div className="flex items-center gap-2 text-brand">
+            <Database className="w-6 h-6" aria-hidden="true" />
+            <h1 className="text-lg font-semibold text-slate-900">DataLens</h1>
           </div>
-          <Link
-            to="/import"
-            className="flex items-center gap-2 px-4 py-2 bg-brand text-white rounded-lg text-sm font-semibold hover:opacity-90"
-          >
-            <Upload className="w-4 h-4" aria-hidden="true" /> Import Dataset
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              to="/import"
+              className="flex items-center gap-2 px-4 py-2 bg-brand text-white rounded-lg text-sm font-semibold hover:opacity-90"
+            >
+              <Upload className="w-4 h-4" aria-hidden="true" /> Import Dataset
+            </Link>
+            <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
+              {user?.email && <span className="text-sm text-slate-500 hidden sm:inline">{user.email}</span>}
+              <button
+                onClick={signOut}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-all"
+              >
+                <LogOut className="w-4 h-4" aria-hidden="true" /> Sign out
+              </button>
+            </div>
+          </div>
         </div>
       </header>
 

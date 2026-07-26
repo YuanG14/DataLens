@@ -10,7 +10,7 @@ export function ImportPage() {
       <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-[1600px] mx-auto px-6 h-16 flex items-center gap-4">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/datasets')}
             className="flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900"
           >
             <ArrowLeft className="w-4 h-4" aria-hidden="true" />

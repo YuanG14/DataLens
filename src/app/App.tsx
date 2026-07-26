@@ -1,16 +1,21 @@
+import { Suspense, lazy } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { ProtectedRoute } from '@/app/routes/ProtectedRoute';
 import { PublicOnlyRoute } from '@/app/routes/PublicOnlyRoute';
-import {
-  LoginPage,
-  SignupPage,
-  ForgotPasswordPage,
-  ResetPasswordPage,
-  DashboardPage,
-  ImportPage,
-  DatasetsPage,
-  DatasetDetailPage,
-} from '@/app/pages';
+import { LoginPage, SignupPage, ForgotPasswordPage, ResetPasswordPage, DatasetsPage } from '@/app/pages';
+
+// These two pull in the analytics engine and chart.js — by far the
+// heaviest part of the dependency tree (see Phase 10 bundle audit) — so
+// they're loaded on demand instead of being part of the initial bundle
+// every user downloads just to sign in or see their dataset list.
+const ImportPage = lazy(() => import('@/app/pages/ImportPage').then((m) => ({ default: m.ImportPage })));
+const DatasetDetailPage = lazy(() =>
+  import('@/app/pages/DatasetDetailPage').then((m) => ({ default: m.DatasetDetailPage })),
+);
+
+function RouteFallback() {
+  return <div className="min-h-screen flex items-center justify-center text-sm text-slate-500">Loading…</div>;
+}
 
 function App() {
   return (
@@ -30,10 +35,24 @@ function App() {
 
         {/* Logged-out users get redirected to /login. */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<DashboardPage />} />
-          <Route path="/import" element={<ImportPage />} />
+          <Route path="/" element={<Navigate to="/datasets" replace />} />
+          <Route
+            path="/import"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <ImportPage />
+              </Suspense>
+            }
+          />
           <Route path="/datasets" element={<DatasetsPage />} />
-          <Route path="/datasets/:datasetId" element={<DatasetDetailPage />} />
+          <Route
+            path="/datasets/:datasetId"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <DatasetDetailPage />
+              </Suspense>
+            }
+          />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

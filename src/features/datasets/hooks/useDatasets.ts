@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { Dataset } from '@/features/datasets/types';
 import { deleteDataset, listDatasets } from '@/features/datasets/lib';
-import { toFriendlyDataError } from '@/features/dashboard/lib/errors';
+import { toFriendlyDataError } from '@/lib/errors';
 
 export function useDatasets() {
   const [datasets, setDatasets] = useState<Dataset[]>([]);
