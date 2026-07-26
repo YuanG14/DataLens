@@ -4,10 +4,7 @@ import { ProtectedRoute } from '@/app/routes/ProtectedRoute';
 import { PublicOnlyRoute } from '@/app/routes/PublicOnlyRoute';
 import { LoginPage, SignupPage, ForgotPasswordPage, ResetPasswordPage, DatasetsPage } from '@/app/pages';
 
-// These two pull in the analytics engine and chart.js — by far the
-// heaviest part of the dependency tree (see Phase 10 bundle audit) — so
-// they're loaded on demand instead of being part of the initial bundle
-// every user downloads just to sign in or see their dataset list.
+
 const ImportPage = lazy(() => import('@/app/pages/ImportPage').then((m) => ({ default: m.ImportPage })));
 const DatasetDetailPage = lazy(() =>
   import('@/app/pages/DatasetDetailPage').then((m) => ({ default: m.DatasetDetailPage })),
