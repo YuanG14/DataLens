@@ -7,6 +7,7 @@ import {
   ForgotPasswordPage,
   ResetPasswordPage,
   DashboardPage,
+  ImportPage,
 } from '@/app/pages';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         {/* Logged-out users get redirected to /login. */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<DashboardPage />} />
+          <Route path="/import" element={<ImportPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
